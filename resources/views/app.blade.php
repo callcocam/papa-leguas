@@ -35,7 +35,7 @@
         <script src="{{ asset('vendor/papa-leguas/' . $jsFile) }}" defer></script>
     @endif
     @if (empty($manifest))
-        @vite(['packages/callcocam/papa-leguas/resources/css/app.css', 'packages/callcocam/papa-leguas/resources/js/app.ts'])
+        @vite(['vendor/callcocam/papa-leguas/resources/css/app.css', 'vendor/callcocam/papa-leguas/resources/js/app.ts'])
     @endif
 </head>
 
