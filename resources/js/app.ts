@@ -99,6 +99,7 @@ ActionRegistry.markAsInitialized()
  * sobrescritos pela aplicação se necessário.
  */
 import FilterRegistry from './utils/FilterRegistry'
+import Icon from './components/icon.vue';
 
 FilterRegistry.registerBulk({
   'filter-text': defineAsyncComponent(() => import('./components/filters/types/FilterText.vue')),
@@ -111,7 +112,11 @@ FilterRegistry.registerBulk({
 
 FilterRegistry.markAsInitialized()
 
+
+
 const app = createApp(App)
+
+app.component('Icon', Icon)
 
 attempt().then(() => {
     app.use(router)
