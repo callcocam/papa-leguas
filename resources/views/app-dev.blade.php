@@ -17,7 +17,7 @@
     </script>
     
     {{-- Papa Leguas Assets (JS + CSS) --}}
-    @vite(['packages/callcocam/papa-leguas/resources/js/app.ts', 'packages/callcocam/papa-leguas/resources/css/app.css'])
+    @vite(['vendor/callcocam/papa-leguas/resources/js/app.ts', 'vendor/callcocam/papa-leguas/resources/css/app.css'])
 </head>
 
 <body>
