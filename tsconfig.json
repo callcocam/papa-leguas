@@ -1,0 +1,64 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.dom.json",
+  "compilerOptions": {
+    // Configurações base do TypeScript
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "composite": false,
+
+    // Configurações de tipos
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+
+    // Suporte JSX/Vue
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+
+    // Aliases de path - alinhado com vite.config.js
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["@/resources/js/*"],
+      "@pkg/*": ["./resources/js/*"]
+    },
+
+    // Configurações para melhor experiência de desenvolvimento
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    // Configurações específicas para Vue
+    "types": ["vite/client", "node"],
+    "verbatimModuleSyntax": true
+  },
+  "include": [
+    "resources/js/**/*",
+    "resources/js/**/*.vue",
+    "resources/js/**/*.ts",
+    "resources/js/**/*.tsx",
+    "vite.config.*",
+    "vitest.config.*",
+    "cypress.config.*",
+    "nightwatch.conf.*",
+    "playwright.config.*"
+  ],
+  "exclude": [
+    "node_modules",
+    "public",
+    "storage",
+    "vendor",
+    "bootstrap/cache",
+    "tests",
+    "dist"
+  ]
+}
