@@ -106,6 +106,7 @@ interface FormColumn {
 interface Props {
   action: TableAction & {
     columns?: FormColumn[]
+    fillData?: Record<string, any>
   }
   size?: 'default' | 'sm' | 'lg' | 'icon'
 }
@@ -230,11 +231,18 @@ const closeModal = () => {
 // Watch para emitir eventos quando o modal abre/fecha e limpar erros
 watch(isOpen, (newValue) => {
   if (newValue) {
+    // Preenche formData com fillData se existir
+    if (props.action.fillData) {
+      formData.value = { ...props.action.fillData }
+    } else {
+      formData.value = {}
+    }
     emit('open')
   } else {
     emit('close')
-    // Limpa erros ao fechar
+    // Limpa erros e dados ao fechar
     formErrors.value = {}
+    formData.value = {}
   }
 })
 

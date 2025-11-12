@@ -75,13 +75,45 @@ trait InteractsWithRequests
             $this->getValidationAttributes()
         );
 
+        $modelClass = $this->getModelClass();
+        $model = $modelClass::create($validated);
+
+        // Execute action callback if exists
+        if ($request->has('action_name') && method_exists($this, 'table')) {
+            $table = $this->table((TableBuilder::make($this->getModelClass()))
+                ->context($this)
+                ->request($request));
+
+            $actionName = $request->input('action_name');
+            $actions = array_merge(
+                $table->getActions(),
+                $table->getHeaderActions()
+            );
+
+            foreach ($actions as $action) {
+                if ($action->getName() === $actionName) {
+                    $callback = $action->getCallbackAction();
+
+                    if ($callback) {
+                        $this->evaluate($callback, [
+                            'record' => $model,
+                            'data' => $validated,
+                            'request' => $request,
+                        ]);
+                    }
+
+                    break;
+                }
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Recurso criado com sucesso',
             'controller' => static::class,
             'method' => 'store',
             'timestamp' => now()->toDateTimeString(),
-            'data' => $validated,
+            'data' => $model,
         ], 201);
     }
 
@@ -141,6 +173,39 @@ trait InteractsWithRequests
             $this->getValidationAttributes()
         );
 
+        $modelClass = $this->getModelClass();
+        $model = $modelClass::findOrFail($id);
+        $model->update($validated);
+
+        // Execute action callback if exists
+        if ($request->has('action_name') && method_exists($this, 'table')) {
+            $table = $this->table((TableBuilder::make($this->getModelClass()))
+                ->context($this)
+                ->request($request));
+
+            $actionName = $request->input('action_name');
+            $actions = array_merge(
+                $table->getActions(),
+                $table->getHeaderActions()
+            );
+
+            foreach ($actions as $action) {
+                if ($action->getName() === $actionName) {
+                    $callback = $action->getCallbackAction();
+
+                    if ($callback) {
+                        $this->evaluate($callback, [
+                            'record' => $model,
+                            'data' => $validated,
+                            'request' => $request,
+                        ]);
+                    }
+
+                    break;
+                }
+            }
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Recurso atualizado com sucesso',
@@ -148,7 +213,7 @@ trait InteractsWithRequests
             'method' => 'update',
             'timestamp' => now()->toDateTimeString(),
             'id' => $id,
-            'data' => $validated,
+            'data' => $model,
         ]);
     }
 
@@ -380,14 +445,14 @@ trait InteractsWithRequests
 
         // Se tiver slug, adiciona sufixo para evitar duplicação
         if (isset($attributes['slug'])) {
-            $attributes['slug'] = $attributes['slug'] . '-copy-' . time();
+            $attributes['slug'] = $attributes['slug'].'-copy-'.time();
         }
 
         // Se tiver name/title, adiciona (Cópia)
         if (isset($attributes['name'])) {
-            $attributes['name'] = $attributes['name'] . ' (Cópia)';
+            $attributes['name'] = $attributes['name'].' (Cópia)';
         } elseif (isset($attributes['title'])) {
-            $attributes['title'] = $attributes['title'] . ' (Cópia)';
+            $attributes['title'] = $attributes['title'].' (Cópia)';
         }
 
         // Cria o novo registro

@@ -29,6 +29,8 @@ class ModalAction extends Action
 
     protected string|Closure|null $slideoverPosition = 'right';
 
+    protected array|Closure|null $fillData = null;
+
     public function __construct(?string $name)
     {
         parent::__construct($name ?? 'modal-action');
@@ -120,6 +122,28 @@ class ModalAction extends Action
         return $this->slideover()->slideoverPosition('right');
     }
 
+    public function fillUsing(array|Closure $fillData): self
+    {
+        $this->fillData = $fillData;
+
+        return $this;
+    }
+
+    public function getFillData(Model $model): ?array
+    {
+        if ($this->fillData === null) {
+            return null;
+        }
+
+        if ($this->fillData instanceof Closure) {
+            return $this->evaluate($this->fillData, [
+                'record' => $model,
+            ]);
+        }
+
+        return $this->fillData;
+    }
+
     /**
      * Executa todas as verificações de permissão em sequência
      *
@@ -153,6 +177,7 @@ class ModalAction extends Action
             'slideoverPosition' => $this->getSlideoverPosition([
                 'record' => $model,
             ]),
+            'fillData' => $this->getFillData($model),
             'columns' => $form['columns'] ?? null,
             'form' => $form,
         ]);
