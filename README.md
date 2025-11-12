@@ -62,9 +62,13 @@ echo $papaLeguas->echoPhrase('Hello, Callcocam!');
 composer test
 ```
 
+## Documentation
+
+Please see our [documentation](docs/README.md) for more information.
+
 ## Changelog
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+Please see [CHANGELOG](docs/CHANGELOG.md) for more information on what has changed recently.
 
 ## Contributing
 

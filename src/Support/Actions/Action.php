@@ -214,7 +214,7 @@ class Action extends AbstractColumn
                     'visible' => false,
                 ];
             }
-
+            
             // Verifica autorização
             $authorized = $this->authorize($model, $request);
             if (! $authorized) {
@@ -224,9 +224,9 @@ class Action extends AbstractColumn
             }
             // Obtém a URL
             $url = $this->getUrl($model);
-
+            
             // Se não conseguiu gerar URL, não renderiza
-            if ($url === '#') {
+            if (! $url) {
                 return null;
             }
 

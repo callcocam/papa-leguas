@@ -85,7 +85,8 @@ ActionRegistry.registerBulk({
   'action-a-link': defineAsyncComponent(() => import('./components/actions/types/ActionALink.vue')),
   'action-dropdown': defineAsyncComponent(() => import('./components/actions/types/ActionDropdown.vue')),
   'action-confirm': defineAsyncComponent(() => import('./components/actions/types/ActionConfirm.vue')),
-  'action-modal': defineAsyncComponent(() => import('./components/actions/types/ActionModalForm.vue')),
+  'action-modal': defineAsyncComponent(() => import('./components/actions/types/ActionModal.vue')),
+  'action-modal-slideover': defineAsyncComponent(() => import('./components/actions/types/ActionModalSlideover.vue')),
   'action-modal-form': defineAsyncComponent(() => import('./components/actions/types/ActionModalForm.vue')), // Novo nome
   'LinkButton': defineAsyncComponent(() => import('./components/actions/types/ActionButton.vue')), // Alias para compatibilidade com backend
 })

@@ -75,8 +75,7 @@ if (!function_exists('getExclusionPattern')) {
 }
 
 // Obtém o domínio base dinamicamente
-$baseDomain = getBaseWebDomain();
-
+$baseDomain = getBaseWebDomain(); 
 // Define prefixos a serem ignorados (configurável)
 $excludedPrefixes = config('papa-leguas.excluded_prefixes', ['api', 'admin', 'webhook']);
 

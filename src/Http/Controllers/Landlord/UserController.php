@@ -72,6 +72,15 @@ class UserController extends LandlordController
 
         // Actions de linha (editar, visualizar, excluir) - todas já vêm pré-configuradas!
         $table->actions([
+            \Callcocam\PapaLeguas\Support\Actions\ModalAction::make('users.modal')->label('Detalhes')
+            ->slideover()
+            ->columns([
+                \Callcocam\PapaLeguas\Support\Form\Columns\TextField::make('name', 'Name'),
+                \Callcocam\PapaLeguas\Support\Form\Columns\TextField::make('email', 'Email'),
+            ])
+            ->modalTitle('Detalhes do Usuário')->modalContent(function ($record) {
+                return "Nome: {$record->name}\nEmail: {$record->email}\nCriado em: {$record->created_at->format('d/m/Y H:i')}";
+            }),
             \Callcocam\PapaLeguas\Support\Actions\ViewAction::make('users.show'),
             \Callcocam\PapaLeguas\Support\Actions\EditAction::make('users.edit'),
             \Callcocam\PapaLeguas\Support\Actions\DeleteAction::make('users.destroy')

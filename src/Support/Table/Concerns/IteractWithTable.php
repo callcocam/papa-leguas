@@ -15,6 +15,7 @@ use Callcocam\PapaLeguas\Support\Concerns\FactoryPattern;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
 trait IteractWithTable
 {
@@ -61,6 +62,7 @@ trait IteractWithTable
             'endpoint' => $this->getEndpoint(),
         ]);
 
+        // Storage::disk('local')->put('actions.json', json_encode($this->getArrayActions()));
         return $result;
     }
 
@@ -154,7 +156,7 @@ trait IteractWithTable
     protected function evaluateActionsAuthorization(Model $model): array
     {
         $actions = [];
-
+ 
         foreach ($this->getActions() as $action) {
             // A action é responsável por sua própria renderização completa
             $rendered = $action->renderForModel($model, $this->getRequest());
