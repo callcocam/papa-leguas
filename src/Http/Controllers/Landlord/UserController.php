@@ -72,16 +72,10 @@ class UserController extends LandlordController
 
         // Actions de linha (editar, visualizar, excluir) - todas já vêm pré-configuradas!
         $table->actions([
-            \Callcocam\PapaLeguas\Support\Actions\ModalAction::make('users.modal')
+            \Callcocam\PapaLeguas\Support\Actions\ModalAction::make('users.modal-action')
                 ->label('Edit Quick')
                 ->icon('Pencil')
                 ->color('blue')
-                ->url(function ($target) {
-                    $context = request()->getContext() ?? 'landlord';
-
-                    return route("api.{$context}.users.modal-action", $target->id, false);
-                })
-                ->method('POST')
                 ->slideover()
                 ->columns([
                     \Callcocam\PapaLeguas\Support\Form\Columns\TextField::make('name', 'Name')->required(),

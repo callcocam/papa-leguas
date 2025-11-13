@@ -187,8 +187,10 @@ const handleSubmit = async () => {
     formErrors.value = {} // Limpa erros anteriores
 
     // Pega o formData do FormRenderer (se existir ref)
-    const dataToSubmit = formRef.value?.formData || formData.value
- 
+    const dataToSubmit = {
+      ...(formRef.value?.formData || formData.value),
+      action_name: props.action.name
+    }
 
     try {
       // Executa a action com os dados do formulário

@@ -40,7 +40,7 @@ class ModalAction extends Action
     {
         parent::setUp();
 
-        $this->icon('Eye')
+        $this->icon('Eye') 
             ->method('POST');
     }
 
