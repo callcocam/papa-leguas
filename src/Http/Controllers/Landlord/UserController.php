@@ -38,7 +38,7 @@ class UserController extends LandlordController
                     // Lógica básica de exportação para teste
                     $users = \Callcocam\PapaLeguas\Models\User::query()->limit(100)->get();
                     $data = $users->toJson();
-                    $fileName = 'users_export_'.now()->format('Y_m_d_H_i_s').'.json';
+                    $fileName = 'users_export_' . now()->format('Y_m_d_H_i_s') . '.json';
                     \Illuminate\Support\Facades\Storage::disk('local')->put($fileName, $data);
 
                     return [
@@ -72,15 +72,36 @@ class UserController extends LandlordController
 
         // Actions de linha (editar, visualizar, excluir) - todas já vêm pré-configuradas!
         $table->actions([
-            \Callcocam\PapaLeguas\Support\Actions\ModalAction::make('users.modal')->label('Detalhes')
-            ->slideover()
-            ->columns([
-                \Callcocam\PapaLeguas\Support\Form\Columns\TextField::make('name', 'Name'),
-                \Callcocam\PapaLeguas\Support\Form\Columns\TextField::make('email', 'Email'),
-            ])
-            ->modalTitle('Detalhes do Usuário')->modalContent(function ($record) {
-                return "Nome: {$record->name}\nEmail: {$record->email}\nCriado em: {$record->created_at->format('d/m/Y H:i')}";
-            }),
+            \Callcocam\PapaLeguas\Support\Actions\ModalAction::make('users.modal')
+                ->label('Edit Quick')
+                ->icon('Pencil')
+                ->color('blue')
+                ->url(function ($target) {
+                    $context = request()->getContext() ?? 'landlord';
+
+                    return route("api.{$context}.users.modal-action", $target->id, false);
+                })
+                ->method('POST')
+                ->slideover()
+                ->columns([
+                    \Callcocam\PapaLeguas\Support\Form\Columns\TextField::make('name', 'Name')->required(),
+                    \Callcocam\PapaLeguas\Support\Form\Columns\TextField::make('email', 'Email')->required(),
+                ])
+                ->fillUsing(function ($record) {
+                    return [
+                        'name' => $record->name,
+                        'email' => $record->email,
+                    ];
+                })
+                ->action(function ($record, $data) {
+                    $record->update($data);
+                    \Illuminate\Support\Facades\Log::info('User updated via ModalAction', [
+                        'user_id' => $record->id,
+                        'data' => $data,
+                    ]);
+                })
+                ->modalTitle('Quick Edit User')
+                ->modalDescription('Edit user information directly from the table'),
             \Callcocam\PapaLeguas\Support\Actions\ViewAction::make('users.show'),
             \Callcocam\PapaLeguas\Support\Actions\EditAction::make('users.edit'),
             \Callcocam\PapaLeguas\Support\Actions\DeleteAction::make('users.destroy')
@@ -102,7 +123,7 @@ class UserController extends LandlordController
                 ->label('Exportar selecionados')
                 ->action(function ($records) {
                     $data = $records->toJson();
-                    $fileName = 'users_export_'.now()->format('Y_m_d_H_i_s').'.json';
+                    $fileName = 'users_export_' . now()->format('Y_m_d_H_i_s') . '.json';
                     \Illuminate\Support\Facades\Storage::disk('local')->put($fileName, $data);
                 }),
         ]);

@@ -14,8 +14,6 @@ class UploadField extends Column
 {
     protected array $acceptedFileTypes = [];
 
-    protected bool $isRequired = false;
-
     protected ?int $maxSize = null;
 
     public function __construct(string $name, ?string $label = null)
@@ -30,13 +28,6 @@ class UploadField extends Column
     public function acceptedFileTypes(array $types): self
     {
         $this->acceptedFileTypes = $types;
-
-        return $this;
-    }
-
-    public function required(bool $required = true): self
-    {
-        $this->isRequired = $required;
 
         return $this;
     }

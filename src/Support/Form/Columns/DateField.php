@@ -12,8 +12,6 @@ use Callcocam\PapaLeguas\Support\Form\Column;
 
 class DateField extends Column
 {
-    protected bool $isRequired = false;
-
     protected ?string $minDate = null;
 
     protected ?string $maxDate = null;
@@ -28,13 +26,6 @@ class DateField extends Column
         $this->type('date');
         $this->component('form-column-date');
         $this->setUp();
-    }
-
-    public function required(bool $required = true): self
-    {
-        $this->isRequired = $required;
-
-        return $this;
     }
 
     public function minDate(string $date): self
@@ -71,7 +62,6 @@ class DateField extends Column
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'required' => $this->isRequired,
             'minDate' => $this->minDate,
             'maxDate' => $this->maxDate,
             'format' => $this->format,

@@ -6,9 +6,9 @@
  * https://www.sigasmart.com.br
  */
 
-use Callcocam\Papaleguas\Services\Menu\ControllerDiscoveryService;
-use Callcocam\PapaLeguas\Services\DomainDetectionService;
 use Callcocam\PapaLeguas\Enums\Menu\ContextEnum;
+use Callcocam\PapaLeguas\Services\DomainDetectionService;
+use Callcocam\Papaleguas\Services\Menu\ControllerDiscoveryService;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -38,9 +38,10 @@ $controllers = [];
 
 try {
     // Verifica se não está rodando migrations
-    if (!app()->runningInConsole() || !in_array('migrate', $_SERVER['argv'] ?? [])) {
+    if (! app()->runningInConsole() || ! in_array('migrate', $_SERVER['argv'] ?? [])) {
         $controllers = \Illuminate\Support\Facades\Cache::remember($cacheKey, 86400, function () {
             $service = app(ControllerDiscoveryService::class);
+
             return $service->discover();
         });
     } else {
@@ -73,6 +74,10 @@ Route::middleware(['api', 'auth:sanctum'])
                 $sluggedName = $metadata->sluggedName;
                 $controllerClass = $metadata->className;
                 Route::resource($sluggedName, $controllerClass)->parameter($sluggedName, 'id');
+
+                // Register modal action route for CRUD resources
+                Route::post("{$sluggedName}/{id}/modal-action", [$controllerClass, 'modalAction'])
+                    ->name("{$sluggedName}.modal-action");
             } else {
                 // Registra rotas individuais conforme os métodos disponíveis
                 $sluggedName = $metadata->sluggedName;
@@ -87,6 +92,12 @@ Route::middleware(['api', 'auth:sanctum'])
                         'destroy' => Route::delete("{$sluggedName}/{id}", [$controllerClass, 'destroy'])->name(sprintf('%s.destroy', request()->getContext(), $sluggedName)),
                         default => null,
                     };
+                }
+
+                // Register modal action route for non-CRUD resources if they have update method
+                if (in_array('update', $metadata->availableMethods)) {
+                    Route::post("{$sluggedName}/{id}/modal-action", [$controllerClass, 'modalAction'])
+                        ->name("{$sluggedName}.modal-action");
                 }
             }
         }

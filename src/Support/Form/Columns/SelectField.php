@@ -12,8 +12,6 @@ use Callcocam\PapaLeguas\Support\Form\Column;
 
 class SelectField extends Column
 {
-    protected bool $isRequired = false;
-
     protected ?string $placeholder = null;
 
     protected bool $searchable = false;
@@ -23,13 +21,6 @@ class SelectField extends Column
         parent::__construct($name, $label);
         $this->component('form-column-select');
         $this->setUp();
-    }
-
-    public function required(bool $required = true): self
-    {
-        $this->isRequired = $required;
-
-        return $this;
     }
 
     public function placeholder(string $placeholder): self
@@ -49,7 +40,6 @@ class SelectField extends Column
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'required' => $this->isRequired,
             'placeholder' => $this->placeholder ?? $this->getLabel(),
             'searchable' => $this->searchable,
             'multiple' => $this->isMultiple(),

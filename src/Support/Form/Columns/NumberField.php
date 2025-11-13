@@ -12,8 +12,6 @@ use Callcocam\PapaLeguas\Support\Form\Column;
 
 class NumberField extends Column
 {
-    protected bool $isRequired = false;
-
     protected ?string $placeholder = null;
 
     protected ?float $min = null;
@@ -28,13 +26,6 @@ class NumberField extends Column
         $this->type('number');
         $this->component('form-column-number');
         $this->setUp();
-    }
-
-    public function required(bool $required = true): self
-    {
-        $this->isRequired = $required;
-
-        return $this;
     }
 
     public function placeholder(string $placeholder): self

@@ -10,10 +10,12 @@ namespace Callcocam\PapaLeguas\Support\Form;
 
 use Callcocam\PapaLeguas\Support\AbstractColumn;
 use Callcocam\PapaLeguas\Support\Concerns\BelongsToHelpers;
+use Callcocam\PapaLeguas\Support\Concerns\BelongsToValidation;
 
 abstract class Column extends AbstractColumn
 {
     use BelongsToHelpers;
+    use BelongsToValidation;
 
     protected string $type = 'text';
 
@@ -36,6 +38,9 @@ abstract class Column extends AbstractColumn
             'append' => $this->getAppend(),
             'prefix' => $this->getPrefix(),
             'suffix' => $this->getSuffix(),
+            'required' => $this->isRequired(),
+            'minLength' => $this->getMinLength(),
+            'maxLength' => $this->getMaxLength(),
         ]);
     }
 }

@@ -214,6 +214,7 @@ trait InteractsWithRequests
             'timestamp' => now()->toDateTimeString(),
             'id' => $id,
             'data' => $model,
+            'validated' => $validated,
         ]);
     }
 
@@ -459,5 +460,100 @@ trait InteractsWithRequests
         $duplicate = $modelClass::create($attributes);
 
         return $this->duplicatedResponse();
+    }
+
+    /**
+     * Process a modal action request.
+     * This is a dedicated endpoint for ModalAction processing.
+     */
+    public function modalAction(Request $request, string $id): JsonResponse
+    {
+        $actionName = $request->input('action_name');
+
+        if (! $actionName) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Action name is required',
+            ], 422);
+        }
+
+        // Get the action from table configuration
+        if (! method_exists($this, 'table')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Table configuration not found',
+            ], 404);
+        }
+
+        $table = $this->table((TableBuilder::make($this->getModelClass()))
+            ->context($this)
+            ->request($request));
+
+        // Find the action
+        $actions = array_merge(
+            $table->getActions(),
+            $table->getHeaderActions()
+        );
+
+        $targetAction = null;
+        foreach ($actions as $action) {
+            if ($action->getName() === $actionName) {
+                $targetAction = $action;
+                break;
+            }
+        }
+
+        if (! $targetAction) {
+            $availableActions = array_map(fn ($a) => $a->getName(), $actions);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Action not found',
+                'action_name' => $actionName,
+                'available_actions' => $availableActions,
+            ], 404);
+        }
+
+        // Validate request data
+        $rules = $this->getValidationUpdateRules();
+
+        // If no validation rules exist, use all request data except action_name
+        if (empty($rules)) {
+            $validated = $request->except('action_name');
+        } else {
+            $validated = $request->validate(
+                $rules,
+                $this->getValidationMessages(),
+                $this->getValidationAttributes()
+            );
+        }
+
+        // Find the model
+        $modelClass = $this->getModelClass();
+        $model = $modelClass::findOrFail($id);
+
+        // Execute action callback
+        $callback = $targetAction->getCallbackAction();
+
+        if ($callback) {
+            $this->evaluate($callback, [
+                'record' => $model,
+                'data' => $validated,
+                'request' => $request,
+            ]);
+        }
+
+        // Refresh model to get updated data
+        $model->refresh();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Modal action executed successfully',
+            'controller' => static::class,
+            'method' => 'modalAction',
+            'timestamp' => now()->toDateTimeString(),
+            'action_name' => $actionName,
+            'data' => $model,
+        ]);
     }
 }

@@ -12,24 +12,14 @@ use Callcocam\PapaLeguas\Support\Form\Column;
 
 class CheckboxField extends Column
 {
-    protected bool $isRequired = false;
-
     protected ?string $description = null;
-
-    protected bool $defaultValue = false;
 
     public function __construct(string $name, ?string $label = null)
     {
         parent::__construct($name, $label);
         $this->component('form-column-checkbox');
+        $this->default(false);
         $this->setUp();
-    }
-
-    public function required(bool $required = true): self
-    {
-        $this->isRequired = $required;
-
-        return $this;
     }
 
     public function description(string $description): self
@@ -39,19 +29,10 @@ class CheckboxField extends Column
         return $this;
     }
 
-    public function default(bool $value): self
-    {
-        $this->defaultValue = $value;
-
-        return $this;
-    }
-
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'required' => $this->isRequired,
             'description' => $this->description,
-            'default' => $this->defaultValue,
         ]);
     }
 }

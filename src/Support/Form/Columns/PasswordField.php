@@ -12,11 +12,7 @@ use Callcocam\PapaLeguas\Support\Form\Column;
 
 class PasswordField extends Column
 {
-    protected bool $isRequired = false;
-
     protected ?string $placeholder = null;
-
-    protected ?int $minLength = null;
 
     protected bool $showToggle = true;
 
@@ -28,23 +24,9 @@ class PasswordField extends Column
         $this->setUp();
     }
 
-    public function required(bool $required = true): self
-    {
-        $this->isRequired = $required;
-
-        return $this;
-    }
-
     public function placeholder(string $placeholder): self
     {
         $this->placeholder = $placeholder;
-
-        return $this;
-    }
-
-    public function minLength(int $length): self
-    {
-        $this->minLength = $length;
 
         return $this;
     }
@@ -59,9 +41,7 @@ class PasswordField extends Column
     public function toArray(): array
     {
         return array_merge(parent::toArray(), [
-            'required' => $this->isRequired,
             'placeholder' => $this->placeholder,
-            'minLength' => $this->minLength,
             'showToggle' => $this->showToggle,
         ]);
     }

@@ -53,6 +53,11 @@ class CompositeResourceRegistrar extends ResourceRegistrar
                 'uses' => "{$controller}@bulkAction",
                 'as' => "{$name}.bulk.action"
             ]);
+
+            $this->router->post("{$name}/{id}/modal-action", [
+                'uses' => "{$controller}@modalAction",
+                'as' => "{$name}.modal-action"
+            ]);
         }
     }
 
@@ -78,7 +83,7 @@ class CompositeResourceRegistrar extends ResourceRegistrar
     {
         if ($this->shouldAddRoute('export', $options)) {
             // Export todos os registros
- 
+
             $this->router->post("{$name}/export/file", [
                 'uses' => "{$controller}@export",
                 'as' => "{$name}.export"

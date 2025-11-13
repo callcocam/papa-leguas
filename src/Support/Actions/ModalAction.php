@@ -40,7 +40,8 @@ class ModalAction extends Action
     {
         parent::setUp();
 
-        $this->icon('Eye');
+        $this->icon('Eye')
+            ->method('POST');
     }
 
     public function modalTitle(string|Closure|null $modalTitle): self
@@ -159,9 +160,15 @@ class ModalAction extends Action
      */
     public function renderForModel(Model $model, ?Request $request = null): ?array
     {
+        $parentRender = parent::renderForModel($model, $request);
+
+        if ($parentRender === null) {
+            return null;
+        }
+
         $form = $this->getForm();
 
-        return array_merge(parent::renderForModel($model, $request), [
+        return array_merge($parentRender, [
             'modalTitle' => $this->getModalTitle([
                 'record' => $model,
             ]),

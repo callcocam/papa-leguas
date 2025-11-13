@@ -117,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, h } from 'vue'
+import { ref, computed, h, watch } from 'vue'
 import { Button } from '@/components/ui/button'
 import { X } from 'lucide-vue-next'
 import * as LucideIcons from 'lucide-vue-next'
@@ -143,6 +143,7 @@ interface Props {
     modalContent?: string
     slideoverPosition?: 'right' | 'left'
     columns?: FormColumn[]
+    fillData?: Record<string, any>
   }
   size?: 'default' | 'sm' | 'lg' | 'icon'
 }
@@ -231,16 +232,30 @@ const iconComponent = computed(() => {
 const openSlideover = () => {
   isOpen.value = true
   emit('click')
-  emit('open')
 }
 
 // Fecha o slideover
 const closeSlideover = () => {
   isOpen.value = false
-  emit('close')
-  // Limpa erros ao fechar
-  formErrors.value = {}
 }
+
+// Watch para preencher formData quando o slideover abre/fecha
+watch(isOpen, (newValue) => {
+  if (newValue) {
+    // Preenche formData com fillData se existir
+    if (props.action.fillData) {
+      formData.value = { ...props.action.fillData }
+    } else {
+      formData.value = {}
+    }
+    emit('open')
+  } else {
+    emit('close')
+    // Limpa erros e dados ao fechar
+    formErrors.value = {}
+    formData.value = {}
+  }
+})
 
 // Handler para submit do formulário
 const handleSubmit = async () => {
@@ -249,7 +264,10 @@ const handleSubmit = async () => {
     formErrors.value = {} // Limpa erros anteriores
 
     // Pega o formData do FormRenderer (se existir ref)
-    const dataToSubmit = formRef.value?.formData || formData.value
+    const dataToSubmit = {
+      ...(formRef.value?.formData || formData.value),
+      action_name: props.action.name
+    }
 
     try {
       // Executa a action com os dados do formulário

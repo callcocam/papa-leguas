@@ -14,10 +14,6 @@ class TextareaField extends Column
 {
     protected int $rows = 3;
 
-    protected ?int $maxLength = null;
-
-    protected bool $isRequired = false;
-
     protected ?string $placeholder = null;
 
     public function __construct(string $name, ?string $label = null)
@@ -34,20 +30,6 @@ class TextareaField extends Column
         return $this;
     }
 
-    public function maxLength(int $length): self
-    {
-        $this->maxLength = $length;
-
-        return $this;
-    }
-
-    public function required(bool $required = true): self
-    {
-        $this->isRequired = $required;
-
-        return $this;
-    }
-
     public function placeholder(string $placeholder): self
     {
         $this->placeholder = $placeholder;
@@ -59,8 +41,6 @@ class TextareaField extends Column
     {
         return array_merge(parent::toArray(), [
             'rows' => $this->rows,
-            'maxLength' => $this->maxLength,
-            'required' => $this->isRequired,
             'placeholder' => $this->placeholder,
         ]);
     }

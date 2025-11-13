@@ -12,8 +12,6 @@ use Callcocam\PapaLeguas\Support\Form\Column;
 
 class EmailField extends Column
 {
-    protected bool $isRequired = false;
-
     protected ?string $placeholder = null;
 
     public function __construct(string $name, ?string $label = null)
@@ -22,13 +20,6 @@ class EmailField extends Column
         $this->type('email');
         $this->component('form-column-email');
         $this->setUp();
-    }
-
-    public function required(bool $required = true): self
-    {
-        $this->isRequired = $required;
-
-        return $this;
     }
 
     public function placeholder(string $placeholder): self
